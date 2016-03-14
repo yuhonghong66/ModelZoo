@@ -1,4 +1,4 @@
-# Natural Languade Processing
+# Natural Language Processing
 
 ## Question Answer
 
