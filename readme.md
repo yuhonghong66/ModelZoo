@@ -1,6 +1,6 @@
 This repo contains a number of standard deep learning models that can be run with the neon libraries.  The
 specific model type subdirectories include more detailed information on the various models.  Below is a summary
-of the vairous tasks and models included here that address those tasks.
+of the various tasks and models included here that address those tasks.
 
 ### Image classification
    
