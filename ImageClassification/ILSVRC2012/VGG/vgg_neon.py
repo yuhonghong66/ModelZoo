@@ -42,7 +42,7 @@ parser.add_argument('--test_only', action='store_true',
 args = parser.parse_args()
 
 img_set_options = dict(repo_dir=args.data_dir, inner_size=224,
-                       subset_pct=args.subset_pct, dtype=args.datatype)
+                       subset_pct=args.subset_pct)
 train = ImageLoader(set_name='train', scale_range=(256, 384),
                     shuffle=True, **img_set_options)
 test = ImageLoader(set_name='validation', scale_range=(256, 256), do_transforms=False,

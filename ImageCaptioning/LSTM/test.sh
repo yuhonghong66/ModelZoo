@@ -30,7 +30,7 @@ fi
 
 # get the top-1 misclass
 bleu=`tail -n 1 output.dat | sed "s/BLEU = //" | sed "s/\/.*//"`
-bleupass=`echo $top1'>'12 | bc -l`
+bleupass=`echo $bleu'>'12 | bc -l`
 
 rc=0
 if [ $bleupass -ne 1 ];then

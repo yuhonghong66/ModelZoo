@@ -20,12 +20,12 @@ First run the `train.py` script to get a pickle file of model weights. Use the c
 to choose between LSTMs or GRUs, `--save_path` to specify the output pickle file location, and `-t` to specify which
 bAbI task to run.
 ```
-python examples/babi/train.py -e 20 --rlayer_type gru --save_path babi.p -t 15
+python train.py -e 20 --rlayer_type gru --save_path babi.p -t 15
 ```
 
 Second run the demo with the newly created pickle file.
 ```
-python examples/babi/demo.py -t 15 --rlayer_type gru --model_weights babi.p
+python demo.py -t 15 --rlayer_type gru --model_weights babi.p
 ```
 ```
 Task is en/qa15_basic-deduction

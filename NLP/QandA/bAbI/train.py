@@ -85,16 +85,17 @@ valid_set = QA(*babi.test)
 # create model
 model = create_model(babi.vocab_size, args.rlayer_type)
 
-# setup callbacks
-callbacks = Callbacks(model, eval_set=valid_set, **args.callback_args)
-
 # train model
-if args.test_only:
+if not args.test_only:
+    # setup callbacks
+    callbacks = Callbacks(model, eval_set=valid_set, **args.callback_args)
     model.fit(train_set,
               optimizer=Adam(),
               num_epochs=args.epochs,
               cost=GeneralizedCost(costfunc=CrossEntropyMulti()),
               callbacks=callbacks)
+else:
+    model.load_params(args.model_file)
 
 # output accuracies
 print('Train Accuracy = %.1f%%' % (model.eval(train_set, metric=Accuracy())*100))

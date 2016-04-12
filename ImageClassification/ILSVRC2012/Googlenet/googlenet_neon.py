@@ -20,7 +20,8 @@ Googlenet V1 implementation
 import os
 
 from neon.util.argparser import NeonArgparser
-from neon.layers import Conv, Pooling, MergeBroadcast, BranchNode, Affine, Tree, Dropout
+from neon.layers import Conv, Pooling, MergeBroadcast, BranchNode
+from neon.layers import Affine, SingleOutputTree, Dropout
 from neon.layers import GeneralizedCost, Multicost
 from neon.initializers import Constant, Xavier
 from neon.backends import gen_backend
@@ -38,7 +39,7 @@ args = parser.parse_args()
 
 # setup data provider
 img_set_options = dict(repo_dir=args.data_dir, inner_size=224,
-                       dtype=args.datatype, subset_pct=args.subset_pct)
+                       subset_pct=args.subset_pct)
 test = ImageLoader(set_name='validation', scale_range=(256, 256),
                    do_transforms=False, **img_set_options)
 
@@ -104,7 +105,7 @@ main1 = main_branch(branch_nodes)
 aux1 = aux_branch(branch_nodes[0])
 aux2 = aux_branch(branch_nodes[1])
 
-model = Model(layers=Tree([main1, aux1, aux2], alphas=[1.0, 0.3, 0.3]))
+model = Model(layers=SingleOutputTree([main1, aux1, aux2], alphas=[1.0, 0.3, 0.3]))
 
 valmetric = TopKMisclassification(k=5)
 

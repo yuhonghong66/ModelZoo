@@ -22,15 +22,16 @@ WEIGHTS_FILE=${WEIGHTS_URL##*/}
 echo "Downloading weights file from ${WEIGHTS_URL}"
 curl -o $WEIGHTS_FILE $WEIGHTS_URL 2> /dev/null
 
-python -u train.py --test_only -i ${EXECUTOR_NUMBER} -vvv --model_file $WEIGHTS_FILE --no_progress_bar > output.dat
+python -u train.py --test_only -i ${EXECUTOR_NUMBER} -vvv --model_file $WEIGHTS_FILE --task 15 --no_progress_bar > output.dat
+
 rc=$?
 if [ $rc -ne 0 ];then
     exit $rc
 fi
 
 # get the top-1 misclass
-trainacc=`tail -n 2 output.dat | grep "Train" | sed "s/.*Accuracy = //" | sed "s/ \%.*//"`
-testacc=`tail -n 2 output.dat | grep "Test" | sed "s/.*Accuracy = //" | sed "s/ \%.*//"`
+trainacc=`tail -n 2 output.dat | grep "Train" | sed "s/.*Accuracy = //" | sed "s/\%.*//"`
+testacc=`tail -n 2 output.dat | grep "Test" | sed "s/.*Accuracy = //" | sed "s/\%.*//"`
 
 trainpass=0
 testpass=0
@@ -44,7 +45,7 @@ if [ $trainpass -ne 1 ];then
     rc=1
 fi
 
-if [ $estpass -ne 1 ];then
+if [ $testpass -ne 1 ];then
     echo "Test Accuracy too low "$testacc
     rc=1
 fi

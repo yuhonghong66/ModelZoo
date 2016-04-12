@@ -26,5 +26,5 @@ args = parser.parse_args()
 # setup data provider
 test_set = ImageLoader(set_name='validation', repo_dir=args.data_dir,
                        inner_size=32, scale_range=40, do_transforms=False)
-model = Model(load_obj(args.model_file), test_set)
+model = Model(load_obj(args.model_file))
 print 'Accuracy: %.1f %% (Top-1)' % (1.0-model.eval(test_set, metric=Misclassification())*100)
