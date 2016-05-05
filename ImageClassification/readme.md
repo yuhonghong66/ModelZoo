@@ -82,7 +82,7 @@ arXiv preprint arXiv:1412.6806, 2014.
 ### Data
 
 The Deep Residual Network model
-[readme.md](https://github.com/nervanazoo/NervanaModelZoo/blob/master/ImageClassification/CIFAR10/DeepResNet/README.md)
+[readme.md](https://github.com/nervanazoo/NervanaModelZoo/blob/master/ImageClassification/CIFAR10/DeepResNet/readme.md)
 provides instructions on converting the CIFAR-10 dataset to the format required by the neon ImageLoader class. 
 The All CNN model script will download the CIFAR-10 dataset automatically.
 
