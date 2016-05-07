@@ -22,7 +22,7 @@ This model is acheiving 94.3% and 84.5% accuracy on the training and validation 
 
 Neon version: commit SHA
 [e7ab2c2e2](https://github.com/NervanaSystems/neon/commit/e7ab2c2e27f113a4d36d17ba8c79546faed7d916).
-Make sure that your local repo is synced to this commit and run the [installation procedure](http://neon.nervanasys.com/docs/latest/user_guide.html#installation) before proceeding.
+Make sure that your local repo is synced to this commit and run the [installation procedure](http://neon.nervanasys.com/docs/latest/installation.html) before proceeding.
 
 If neon is installed into a `virtualenv`, make sure that it is activated before running the commands below.  Also, the commands below use the GPU backend by default so add `-b cpu` if you are running on a system without a compatible GPU.
 
