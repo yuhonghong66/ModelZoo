@@ -14,14 +14,22 @@
 # limitations under the License.
 # ----------------------------------------------------------------------------
 """
-Runs one epoch of Alexnet on imagenet data.
-For running complete alexnet
-alexnet.py -e 90 -eval 1 -s <save-path> -w <path-to-saved-batches>
+Caffenet implementation:
+An Alexnet like model adapted to neon
+See:
+    http://dl.caffe.berkeleyvision.org/bvlc_reference_caffenet.caffemodel
+
+To run the complete training for 60 epochs
+    alexnet_neon.py -e 60 -eval 1 -s <save-path> -w <path-to-saved-batches>
+
+To load a pretrained model and run it on the validation set:
+    alexnet_neon.py -w <path-to-saved-batches> --test_only \
+            --model_file <saved weights file>
 """
 
 from neon.util.argparser import NeonArgparser
 from neon.initializers import Constant, Gaussian
-from neon.layers import Conv, Dropout, Pooling, GeneralizedCost, Affine
+from neon.layers import Conv, Dropout, Pooling, GeneralizedCost, Affine, LRN
 from neon.optimizers import GradientDescentMomentum, MultiOptimizer, Schedule
 from neon.transforms import Rectlin, Softmax, CrossEntropyMulti, TopKMisclassification
 from neon.models import Model
@@ -44,36 +52,84 @@ if args.test_only:
 img_set_options = dict(repo_dir=args.data_dir,
                        inner_size=224,
                        subset_pct=args.subset_pct)
-train = ImageLoader(set_name='train', scale_range=(256, 384), shuffle=True, **img_set_options)
-test = ImageLoader(set_name='validation', scale_range=(256, 256), do_transforms=False,
-                   **img_set_options)
+train = ImageLoader(set_name='train', scale_range=(256, 384),
+                    shuffle=True, **img_set_options)
+test = ImageLoader(set_name='validation', scale_range=(256, 256),
+                   do_transforms=False, **img_set_options)
 
-layers = [Conv((11, 11, 64), init=Gaussian(scale=0.01), bias=Constant(0),
-               activation=Rectlin(), padding=3, strides=4),
-          Pooling(3, strides=2),
-          Conv((5, 5, 192), init=Gaussian(scale=0.01), bias=Constant(1),
-               activation=Rectlin(), padding=2),
-          Pooling(3, strides=2),
-          Conv((3, 3, 384), init=Gaussian(scale=0.03), bias=Constant(0),
-               activation=Rectlin(), padding=1),
-          Conv((3, 3, 256), init=Gaussian(scale=0.03), bias=Constant(1),
-               activation=Rectlin(), padding=1),
-          Conv((3, 3, 256), init=Gaussian(scale=0.03), bias=Constant(1),
-               activation=Rectlin(), padding=1),
-          Pooling(3, strides=2),
-          Affine(nout=4096, init=Gaussian(scale=0.01), bias=Constant(1), activation=Rectlin()),
-          Dropout(keep=0.5),
-          Affine(nout=4096, init=Gaussian(scale=0.01), bias=Constant(1), activation=Rectlin()),
-          Dropout(keep=0.5),
-          Affine(nout=1000, init=Gaussian(scale=0.01), bias=Constant(-7), activation=Softmax())]
+init_g1 = Gaussian(scale=0.01)
+init_g2 = Gaussian(scale=0.005)
+
+relu = Rectlin()
+
+layers = []
+layers.append(Conv((11, 11, 96),
+                   padding=0,
+                   strides=4,
+                   init=init_g1,
+                   bias=Constant(0),
+                   activation=relu,
+                   name='conv1'))
+
+layers.append(Pooling(3, strides=2, name='pool1'))
+layers.append(LRN(5, ascale=0.0001, bpower=0.75, name='norm1'))
+layers.append(Conv((5, 5, 256),
+                    padding=2,
+                    init=init_g1,
+                    bias=Constant(1.0),
+                    activation=relu,
+                    name='conv2'))
+
+layers.append(Pooling(3, strides=2, name='pool2'))
+layers.append(LRN(5, ascale=0.0001, bpower=0.75, name='norm2'))
+layers.append(Conv((3, 3, 384),
+                    padding=1,
+                    init=init_g1,
+                    bias=Constant(0),
+                    activation=relu,
+                    name='conv3'))
+
+layers.append(Conv((3, 3, 384),
+                    padding=1,
+                    init=init_g1,
+                    bias=Constant(1.0),
+                    activation=relu,
+                    name='conv4'))
+
+layers.append(Conv((3, 3, 256),
+                    padding=1,
+                    init=init_g1,
+                    bias=Constant(1.0),
+                    activation=relu,
+                    name='conv5'))
+
+layers.append(Pooling(3, strides=2, name='pool5'))
+layers.append(Affine(nout=4096,
+                      init=init_g2,
+                      bias=Constant(1.0),
+                      activation=relu,
+                      name='fc6'))
+
+layers.append(Dropout(keep=0.5, name='drop6'))
+layers.append(Affine(nout=4096,
+                      init=init_g2,
+                      bias=Constant(1.0),
+                      activation=relu,
+                      name='fc7'))
+
+layers.append(Dropout(keep=0.5, name='drop7'))
+layers.append(Affine(nout=1000,
+                      init=init_g1,
+                      bias=Constant(0.0),
+                      activation=Softmax(),
+                      name='fc8'))
+
 model = Model(layers=layers)
 
-# drop weights LR by 1/250**(1/3) at epochs (23, 45, 66), drop bias LR by 1/10 at epoch 45
-weight_sched = Schedule([22, 44, 65], (1/250.)**(1/3.))
-opt_gdm = GradientDescentMomentum(0.01, 0.9, wdecay=0.0005, schedule=weight_sched,
-                                  stochastic_round=args.rounding)
-opt_biases = GradientDescentMomentum(0.02, 0.9, schedule=Schedule([44], 0.1),
-                                     stochastic_round=args.rounding)
+# scale LR by 0.1 every 20 epochs (this assumes batch_size = 256)
+weight_sched = Schedule(20, 0.1)
+opt_gdm = GradientDescentMomentum(0.01, 0.9, wdecay=0.0005, schedule=weight_sched)
+opt_biases = GradientDescentMomentum(0.02, 0.9, schedule=weight_sched)
 opt = MultiOptimizer({'default': opt_gdm, 'Bias': opt_biases})
 
 # configure callbacks
