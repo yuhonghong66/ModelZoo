@@ -15,7 +15,8 @@
 # ----------------------------------------------------------------------------
 """
 Caffenet implementation:
-An Alexnet like model adapted to neon
+An Alexnet like model adapted to neon.  Does not include the weight grouping.
+
 See:
     http://dl.caffe.berkeleyvision.org/bvlc_reference_caffenet.caffemodel
 
@@ -63,66 +64,36 @@ init_g2 = Gaussian(scale=0.005)
 relu = Rectlin()
 
 layers = []
-layers.append(Conv((11, 11, 96),
-                   padding=0,
-                   strides=4,
-                   init=init_g1,
-                   bias=Constant(0),
-                   activation=relu,
-                   name='conv1'))
+layers.append(Conv((11, 11, 96), padding=0, strides=4,
+                   init=init_g1, bias=Constant(0), activation=relu, name='conv1'))
 
 layers.append(Pooling(3, strides=2, name='pool1'))
 layers.append(LRN(5, ascale=0.0001, bpower=0.75, name='norm1'))
-layers.append(Conv((5, 5, 256),
-                    padding=2,
-                    init=init_g1,
-                    bias=Constant(1.0),
-                    activation=relu,
-                    name='conv2'))
+layers.append(Conv((5, 5, 256), padding=2, init=init_g1,
+                    bias=Constant(1.0), activation=relu, name='conv2'))
 
 layers.append(Pooling(3, strides=2, name='pool2'))
 layers.append(LRN(5, ascale=0.0001, bpower=0.75, name='norm2'))
-layers.append(Conv((3, 3, 384),
-                    padding=1,
-                    init=init_g1,
-                    bias=Constant(0),
-                    activation=relu,
-                    name='conv3'))
+layers.append(Conv((3, 3, 384), padding=1, init=init_g1, bias=Constant(0),
+                    activation=relu, name='conv3'))
 
-layers.append(Conv((3, 3, 384),
-                    padding=1,
-                    init=init_g1,
-                    bias=Constant(1.0),
-                    activation=relu,
-                    name='conv4'))
+layers.append(Conv((3, 3, 384), padding=1, init=init_g1, bias=Constant(1.0),
+                    activation=relu, name='conv4'))
 
-layers.append(Conv((3, 3, 256),
-                    padding=1,
-                    init=init_g1,
-                    bias=Constant(1.0),
-                    activation=relu,
-                    name='conv5'))
+layers.append(Conv((3, 3, 256), padding=1, init=init_g1, bias=Constant(1.0),
+                    activation=relu, name='conv5'))
 
 layers.append(Pooling(3, strides=2, name='pool5'))
-layers.append(Affine(nout=4096,
-                      init=init_g2,
-                      bias=Constant(1.0),
-                      activation=relu,
-                      name='fc6'))
+layers.append(Affine(nout=4096, init=init_g2, bias=Constant(1.0),
+                      activation=relu, name='fc6'))
 
 layers.append(Dropout(keep=0.5, name='drop6'))
-layers.append(Affine(nout=4096,
-                      init=init_g2,
-                      bias=Constant(1.0),
-                      activation=relu,
-                      name='fc7'))
+layers.append(Affine(nout=4096, init=init_g2, bias=Constant(1.0),
+                      activation=relu, name='fc7'))
 
 layers.append(Dropout(keep=0.5, name='drop7'))
-layers.append(Affine(nout=1000,
-                      init=init_g1,
-                      bias=Constant(0.0),
-                      activation=Softmax(),
-                      name='fc8'))
+layers.append(Affine(nout=1000, init=init_g1, bias=Constant(0.0),
+                      activation=Softmax(), name='fc8'))
 
 model = Model(layers=layers)
 
