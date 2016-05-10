@@ -43,7 +43,7 @@ error (around 0.15) as the model in Caffe [code](https://github.com/rbgirshick/f
 
 ### Instructions
 
-Follow the neon [installation procedure](http://neon.nervanasys.com/docs/latest/user_guide.html#installation)
+Follow the neon [installation procedure](http://neon.nervanasys.com/docs/latest/installation.html)
 before proceeding.
 
 If neon is installed into a `virtualenv`, make sure that it is activated before running the commands below.

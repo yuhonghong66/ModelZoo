@@ -30,7 +30,7 @@ the model should achieve roughly 14.6% top-5 error.
 ## Instructions
 This script was tested with [neon version 1.2](https://github.com/NervanaSystems/neon/tree/v1.2.0).
 Make sure that your local repo is synced to this commit and run the [installation
-procedure](http://neon.nervanasys.com/docs/latest/user_guide.html#installation) before proceeding.
+procedure](http://neon.nervanasys.com/docs/latest/installation.html) before proceeding.
 Commit SHA for v1.2 is  `385483881ee1fe1f0445fc78d7edf5b8ddc5c8c5`
 
 This example uses the `ImageLoader` module to load the images for consumption while applying random

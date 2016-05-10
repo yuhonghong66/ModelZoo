@@ -73,7 +73,7 @@ CUDA Driver Version 7.0
 
 ## Instructions
 
-Make sure that your local repo is synced to the proper neon repo commit (see version below) and run the [installation procedure](http://neon.nervanasys.com/docs/latest/user_guide.html#installation) before proceeding.  To run
+Make sure that your local repo is synced to the proper neon repo commit (see version below) and run the [installation procedure](http://neon.nervanasys.com/docs/latest/installation.html) before proceeding.  To run
 this model script on the ILSVRC2012 dataset, you will need to have the data in the neon macrobatch format; follow
 the instructions in the neon documentations for [setting up the data sets](http://neon.nervanasys.com/docs/latest/datasets.html#imagenet).
 
