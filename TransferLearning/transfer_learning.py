@@ -186,7 +186,7 @@ def load_pre_trained_weight(i, layer):
 
 def load_imagenet_weights(model, path):
     # load a pre-trained Alexnet from Neon model zoo to the local
-    url = 'https://s3-us-west-1.amazonaws.com/nervana-modelzoo/alexnet/old/pre_v1.4.0/alexnet.p'
+    url = 'https://s3-us-west-1.amazonaws.com/nervana-modelzoo/alexnet/old/pre_v1.4.0/'
     filename = 'alexnet.p'
     size = 488808400
 
