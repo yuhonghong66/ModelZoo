@@ -26,8 +26,8 @@ import numpy as np
 from PIL import Image
 
 from neon.backends import gen_backend
-from neon.data import PASCALVOC
-from neon.data.pascal_voc import (PASCAL_VOC_CLASSES, PASCAL_VOC_BACKGROUND_CLASS, FRCN_PIXEL_MEANS, 
+#from neon.data import PASCALVOC
+from neon.data.pascal_voc import (PASCALVOCTrain, PASCALVOCInference, PASCAL_VOC_CLASSES, FRCN_PIXEL_MEANS, 
                                   FRCN_IMG_DIM_SWAP, PASCAL_VOC_NUM_CLASSES)
 from neon.data.datasets import Dataset
 from neon.initializers import Gaussian, Constant
@@ -44,6 +44,7 @@ from neon.callbacks.callbacks import Callbacks, Callback
 from neon.util.persist import load_obj
 
 DEBUG = True
+PASCAL_VOC_BACKGROUND_CLASS = 0
 
 def debug(str):
     if DEBUG:
@@ -60,6 +61,7 @@ def main():
     
     # load the training dataset. This will download the dataset from the web and cache it
     # locally for subsequent use.
+    MultiscaleSampler = GetMultiscaleSampler(PASCALVOCTrain)
     train_set = MultiscaleSampler('trainval', '2007', samples_per_img=hyper_params.samples_per_img, 
                                  sample_height=224, path=args.data_dir, 
                                  samples_per_batch=hyper_params.samples_per_batch,
@@ -78,6 +80,7 @@ def main():
     
     # Load the test dataset. This will download the dataset from the web and cache it
     # locally for subsequent use.
+    MultiscaleSampler = GetMultiscaleSampler(PASCALVOCInference)
     test_set = MultiscaleSampler('test', '2007', samples_per_img=hyper_params.samples_per_img, 
                                  sample_height=224, path=args.data_dir, 
                                  samples_per_batch=hyper_params.samples_per_batch,
@@ -122,7 +125,7 @@ def get_args_and_hyperparameters():
         # are close to the minima.
         s = 1e-4
         hyper_params.learning_rate_scale = s
-        hyper_params.learning_rate_sched = Schedule(step_config=[10, 15], 
+        hyper_params.learning_rate_sched = Schedule(step_config=[15, 20], 
                                         change=[0.1*s, 0.01*s])
         hyper_params.momentum = 0.9
     else: # need to be less aggressive with reducing learning rate if the model is not pre-trained
@@ -347,137 +350,141 @@ class PascalImage(object):
         return p_id
     
 # Sample the Pascal VOC dataset 
-class MultiscaleSampler(PASCALVOC):
-    multi_scales = [1., 1.3, 1.6, 2., 2.3, 2.6, 3.0, 3.3, 3.6, 4., 4.3, 4.6, 5.]
-    
-    def __init__(self, image_set, year, samples_per_img, sample_height, max_imgs, shuffle, path='.', samples_per_batch=None):
-        assert( samples_per_img % samples_per_batch == 0)
-        super( MultiscaleSampler, self).__init__(image_set, year, path=path, img_per_batch=samples_per_batch)
-        self.num_imgs = min( max_imgs, self.num_images)
-        self.samples_per_img = samples_per_img
-        self.samples_per_batch = samples_per_batch
-        self.sample_height = sample_height
-        self.batches_per_img = self.samples_per_img / self.samples_per_batch
-        self.shape = (3, sample_height, sample_height)
-        self.shuffle = shuffle
+def GetMultiscaleSampler(base):
+    class MultiscaleSampler(base):
+        multi_scales = [1., 1.3, 1.6, 2., 2.3, 2.6, 3.0, 3.3, 3.6, 4., 4.3, 4.6, 5.]
         
-        assert( self.be.bsz == self.samples_per_batch)
-        
-        self.dev_X = self.be.iobuf( self.shape, dtype=np.float32)
-        self.dev_X_chw = self.dev_X.reshape(3, sample_height, sample_height, self.samples_per_batch)
-        self.dev_y_labels_flat = self.be.zeros((1, self.samples_per_batch), dtype=np.int32)
-        self.dev_y = self.be.zeros((self.num_classes, self.samples_per_batch), dtype=np.int32)
-
-        print "{} Datatset: # images:{}".format( image_set, self.num_imgs)
-        
-    def set_mode(self, mode):
-        assert mode in ('train', 'test')
-        self.mode = mode
-        
-        self.ndata = self.samples_per_img * self.num_imgs
-        self.nbatches = self.batches_per_img * self.num_imgs
+        def __init__(self, image_set, year, samples_per_img, sample_height, max_imgs, shuffle, path='.', samples_per_batch=None):
+            assert( samples_per_img % samples_per_batch == 0)
+            super( MultiscaleSampler, self).__init__(image_set, year, path=path, img_per_batch=samples_per_batch)
+            self.num_imgs = min( max_imgs, self.num_images)
+            self.samples_per_img = samples_per_img
+            self.samples_per_batch = samples_per_batch
+            self.sample_height = sample_height
+            self.batches_per_img = self.samples_per_img / self.samples_per_batch
+            self.shape = (3, sample_height, sample_height)
+            self.shuffle = shuffle
             
-        return
+            assert( self.be.bsz == self.samples_per_batch)
+            
+            self.dev_X = self.be.iobuf( self.shape, dtype=np.float32)
+            self.dev_X_chw = self.dev_X.reshape(3, sample_height, sample_height, self.samples_per_batch)
+            self.dev_y_labels_flat = self.be.zeros((1, self.samples_per_batch), dtype=np.int32)
+            self.dev_y = self.be.zeros((self.num_classes, self.samples_per_batch), dtype=np.int32)
     
-    def resample_patches(self, img):
-        # If we are training then bias the sampling to have as many 
-        # non-background patches as possible
-        total_num_patches = len(img.non_background_patches) + \
-                            len(img.background_patches)
-        assert total_num_patches >= self.samples_per_img, "Incorrect patch generation"
-        if self.image_set[:5] == 'train':
-            if len(img.non_background_patches) > self.samples_per_img:
-                all_patches = img.non_background_patches[:self.samples_per_img]
+            print "{} Datatset: # images:{}".format( image_set, self.num_imgs)
+            
+        def set_mode(self, mode):
+            assert mode in ('train', 'test')
+            self.mode = mode
+            
+            self.ndata = self.samples_per_img * self.num_imgs
+            self.nbatches = self.batches_per_img * self.num_imgs
+                
+            return
+    
+        def resample_patches(self, img):
+            # If we are training then bias the sampling to have as many 
+            # non-background patches as possible
+            total_num_patches = len(img.non_background_patches) + \
+                                len(img.background_patches)
+            assert total_num_patches >= self.samples_per_img, "Incorrect patch generation"
+            if self.image_set[:5] == 'train':
+                if len(img.non_background_patches) > self.samples_per_img:
+                    all_patches = img.non_background_patches[:self.samples_per_img]
+                else:
+                    if total_num_patches > self.samples_per_img:
+                        num_bg_patches_to_keep = len(img.background_patches) - \
+                                                    (total_num_patches - self.samples_per_img)
+                        bg_patches_to_keep = self.be.rng.permutation(len(img.background_patches))
+                        bg_patches_to_keep = bg_patches_to_keep[:num_bg_patches_to_keep]
+                        img.background_patches = [img.background_patches[i] for i in bg_patches_to_keep]
+                    all_patches = img.non_background_patches + img.background_patches
             else:
+                patches = img.non_background_patches + img.background_patches
                 if total_num_patches > self.samples_per_img:
-                    num_bg_patches_to_keep = len(img.background_patches) - \
-                                                (total_num_patches - self.samples_per_img)
-                    bg_patches_to_keep = self.be.rng.permutation(len(img.background_patches))
-                    bg_patches_to_keep = bg_patches_to_keep[:num_bg_patches_to_keep]
-                    img.background_patches = [img.background_patches[i] for i in bg_patches_to_keep]
-                all_patches = img.non_background_patches + img.background_patches
-        else:
-            patches = img.non_background_patches + img.background_patches
-            if total_num_patches > self.samples_per_img:
-                patches_to_keep = self.be.rng.permutation(total_num_patches)
-                patches_to_keep = patches_to_keep[:self.samples_per_img]
-                all_patches = [patches[i] for i in patches_to_keep]
+                    patches_to_keep = self.be.rng.permutation(total_num_patches)
+                    patches_to_keep = patches_to_keep[:self.samples_per_img]
+                    all_patches = [patches[i] for i in patches_to_keep]
+                else:
+                    all_patches = patches
+                
+            return all_patches
+                
+        def fill_samples_and_labels(self, img_idx, samples_np, labels_np):
+            img_db = self.roi_db[ img_idx] 
+            # load and process the image using PIL
+            img_num_rois = img_db['num_gt']
+            img = PascalImage(img_db['img_file'], 
+                              img_db['bb'][:img_num_rois, :],
+                              np.squeeze(img_db['gt_classes'][:img_num_rois, :], axis=1))
+                
+            debug("\n============== Processing: Image {} ({}), Shape:{}, #ROIs: {}={} =================".format(img_idx, img.file_name,
+                                         img.shape, img_num_rois, img.labels))
+            patches = {}
+            p_id_base = 0
+            for scale_idx, scale in enumerate(self.multi_scales):
+                p_id_base = img.compute_patches_at_scale( scale_idx, scale, p_id_base)
+                if p_id_base >= self.samples_per_img and scale_idx > 9:
+                    break
+    
+            debug("Sampled. # Non-BG patches:{} # BG patches:{}".format( 
+                len(img.non_background_patches), len(img.background_patches)))
+            
+            # over-represent the non-background patches during training
+            all_patches = self.resample_patches(img)
+    
+            assert len(all_patches) == self.samples_per_img
+            shuf_idx = self.be.rng.permutation(self.samples_per_img)
+            for i in range(self.samples_per_img):
+                p_idx = shuf_idx[i]
+                p = all_patches[p_idx]
+                p_img = img.pil.crop([int(b) for b in p.bbox])
+                p_img = p_img.resize( (self.sample_height, self.sample_height), Image.LINEAR)
+                if DEBUG and False:
+                    debug_file_path = '{}_{}.jpg'.format( img.debug_file_path_prefix, p_idx)
+                    p_img.save(debug_file_path)
+                    
+                # load it to numpy and flip the channel RGB to BGR
+                p_img_np = np.array(p_img)[:, :, ::-1]
+                # Mean subtract and scale an image
+                p_img_np = p_img_np.astype(np.float32, copy=False)
+                p_img_np -= FRCN_PIXEL_MEANS
+                samples_np[:, :, :, i] = p_img_np.transpose(FRCN_IMG_DIM_SWAP)
+                    
+                labels_np[i] = p.label
+                
+            return
+    
+        def __iter__(self):
+            # permute the dataset for the epoch
+            if self.shuffle is False:
+                self.shuf_idx = [i for i in range(self.num_imgs)]
             else:
-                all_patches = patches
-            
-        return all_patches
-            
-    def fill_samples_and_labels(self, img_idx, samples_np, labels_np):
-        img_db = self.roi_db[ img_idx] 
-        # load and process the image using PIL
-        img_num_rois = img_db['num_gt']
-        img = PascalImage(img_db['img_file'], 
-                          img_db['bb'][:img_num_rois, :],
-                          np.squeeze(img_db['gt_classes'][:img_num_rois, :], axis=1))
-            
-        debug("\n============== Processing: Image {} ({}), Shape:{}, #ROIs: {}={} =================".format(img_idx, img.file_name,
-                                     img.shape, img_num_rois, img.labels))
-        patches = {}
-        p_id_base = 0
-        for scale_idx, scale in enumerate(self.multi_scales):
-            p_id_base = img.compute_patches_at_scale( scale_idx, scale, p_id_base)
-            if p_id_base >= self.samples_per_img and scale_idx > 9:
-                break
-
-        debug("Sampled. # Non-BG patches:{} # BG patches:{}".format( 
-            len(img.non_background_patches), len(img.background_patches)))
-        
-        # over-represent the non-background patches during training
-        all_patches = self.resample_patches(img)
-
-        assert len(all_patches) == self.samples_per_img
-        shuf_idx = self.be.rng.permutation(self.samples_per_img)
-        for i in range(self.samples_per_img):
-            p_idx = shuf_idx[i]
-            p = all_patches[p_idx]
-            p_img = img.pil.crop([int(b) for b in p.bbox])
-            p_img = p_img.resize( (self.sample_height, self.sample_height), Image.LINEAR)
-            if DEBUG and False:
-                debug_file_path = '{}_{}.jpg'.format( img.debug_file_path_prefix, p_idx)
-                p_img.save(debug_file_path)
+                debug("Shuffling images")
+                self.shuf_idx = [i for i in self.be.rng.permutation(self.num_imgs)]
                 
-            # load it to numpy and flip the channel RGB to BGR
-            p_img_np = np.array(p_img)[:, :, ::-1]
-            # Mean subtract and scale an image
-            p_img_np = p_img_np.astype(np.float32, copy=False)
-            p_img_np -= FRCN_PIXEL_MEANS
-            samples_np[:, :, :, i] = p_img_np.transpose(FRCN_IMG_DIM_SWAP)
+            samples_np = np.zeros((3, self.sample_height, self.sample_height, self.samples_per_img), 
+                                   dtype=np.float32)
+            labels_np = np.zeros(self.samples_per_img, dtype=np.int32)
                 
-            labels_np[i] = p.label
-            
-        return
+            for self.batch_index in xrange(self.nbatches):
+                start = (self.batch_index % self.batches_per_img) * self.samples_per_batch
+                end = start + self.samples_per_batch
+                
+                if start == 0:
+                    img_idx = self.batch_index / self.batches_per_img 
+                    img_idx = self.shuf_idx[img_idx]
+                    self.fill_samples_and_labels( img_idx, samples_np, labels_np)
+    
+                self.dev_X_chw.set( np.ascontiguousarray( samples_np[:, :, :, start:end]))
+                self.dev_y_labels_flat[:] = labels_np[start:end].reshape(1, -1)
+                self.dev_y[:] = self.be.onehot( self.dev_y_labels_flat, axis=0)
+                
+                yield self.dev_X, self.dev_y
+            return
 
-    def __iter__(self):
-        # permute the dataset for the epoch
-        if self.shuffle is False:
-            self.shuf_idx = [i for i in range(self.num_imgs)]
-        else:
-            debug("Shuffling images")
-            self.shuf_idx = [i for i in self.be.rng.permutation(self.num_imgs)]
-            
-        samples_np = np.zeros((3, self.sample_height, self.sample_height, self.samples_per_img), 
-                               dtype=np.float32)
-        labels_np = np.zeros(self.samples_per_img, dtype=np.int32)
-            
-        for self.batch_index in xrange(self.nbatches):
-            start = (self.batch_index % self.batches_per_img) * self.samples_per_batch
-            end = start + self.samples_per_batch
-            
-            if start == 0:
-                img_idx = self.batch_index / self.batches_per_img 
-                img_idx = self.shuf_idx[img_idx]
-                self.fill_samples_and_labels( img_idx, samples_np, labels_np)
-
-            self.dev_X_chw.set( np.ascontiguousarray( samples_np[:, :, :, start:end]))
-            self.dev_y_labels_flat[:] = labels_np[start:end].reshape(1, -1)
-            self.dev_y[:] = self.be.onehot( self.dev_y_labels_flat, axis=0)
-            
-            yield self.dev_X, self.dev_y
+    return MultiscaleSampler
 
 class ImageScores(Metric):
     """
