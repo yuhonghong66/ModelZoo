@@ -20,7 +20,7 @@ The trained weights file can be downloaded from AWS using the following link:
 
 ### Performance
 This model is acheiving 58.6% top-1 and 81.1% top-5 accuracy on the validation
-data set.  The training here is using a single, random crop on every epoch and
+data set after 90 epochs of training.  The training here is using a single, random crop on every epoch and
 flipping the images across the vertical axis.  These results improve further
 with additional data augmentation added to the training as decsribed in
 [Krizhevsky,Sutskever, Hinton 2012](http://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks).
