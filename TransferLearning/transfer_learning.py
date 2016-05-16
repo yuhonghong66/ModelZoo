@@ -132,7 +132,7 @@ def get_args_and_hyperparameters():
         hyper_params.learning_rate_sched = Schedule(step_config=[8, 14, 18, 20], 
                                         change=[0.5*s, 0.1*s, 0.05*s, 0.01*s])
         hyper_params.momentum = 0.1
-    hyper_params.class_score_threshold = 0.0001
+    hyper_params.class_score_threshold = 0.000001
     hyper_params.score_exponent = 5
     hyper_params.shuffle = True
     return args, hyper_params
@@ -633,7 +633,7 @@ class ImageScores(Metric):
             print "Avg. Precision: {}".format( avg_precision)
             ap[cls_i] = avg_precision
 
-        print "Mean Avg. Precison: {} Values:{}".format(np.mean(ap), ap)
+        print "Mean Avg. Precison: {} Values:{}".format(np.mean(ap[1:]), ap)
             
         return
 
