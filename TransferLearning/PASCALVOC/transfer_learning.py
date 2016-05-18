@@ -26,7 +26,6 @@ import numpy as np
 from PIL import Image
 
 from neon.backends import gen_backend
-#from neon.data import PASCALVOC
 from pascal_voc import (PASCALVOCTrain, PASCAL_VOC_CLASSES, FRCN_PIXEL_MEANS, 
                                   FRCN_IMG_DIM_SWAP, PASCAL_VOC_NUM_CLASSES)
 from neon.data.datasets import Dataset
