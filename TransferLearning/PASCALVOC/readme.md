@@ -10,7 +10,7 @@ The Alexnet model can be adapted to other image classification tasks by initiali
 feature extraction parameters with those obtained by training Alexnet on the ILSVCR2012
 dataset and adapting the output layers to accomadate the criterion of the new task.
 
-The model included here is an implmentation of the trasnfer learning paradigm described in
+The model included here is an implementation of the transfer learning paradigm described in
 the [paper](http://www.di.ens.fr/willow/pdfscurrent/oquab14cvpr.pdf):
 ```
 "Learning and Transferring Mid-Level Image Representations using Convolutional Neural Networks",
@@ -41,6 +41,13 @@ example:
 ```
 python transfer_learning.py -e 0 -b gpu --model_file tlearn_save.prm
 ```
+
+### Trained weights
+
+The trained weights file can be downloaded from AWS using the following link:
+[trained model weights][S3_WEIGHTS_FILE].
+[S3_WEIGHTS_FILE]: https://s3-us-west-1.amazonaws.com/nervana-modelzoo/transfer_learning/PASCAL_VOC/tlearn_save_5000.prm
+
 
 ## version compatibility
 
