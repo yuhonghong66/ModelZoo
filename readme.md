@@ -14,16 +14,16 @@ of the various tasks and models included here that address those tasks.
   - All CNN
 
 ### Object localization
-   - Fast-RCNN
+  - Fast-RCNN
 
 ### Scene Classification
-   - Deep Residual Network
+  - Deep Residual Network
 
 ### Image Captioning
-   - LSTM
+  - LSTM
 
 ### Video Games
-   - Deep Q-network
+  - Deep Q-network
 
 ### NLP
 #### bAbI (Question Answering)
@@ -34,3 +34,6 @@ of the various tasks and models included here that address those tasks.
 
 ### Video
   - C3D (UCF101 dataset)
+
+### Transfer Learning
+  - Classification using multi scale sampling (PASCALVOC dataset)
