@@ -1,6 +1,6 @@
 ## Introduction
 
-Deep neural networks have been able to acheive state of the art performance on various
+Deep neural networks have been able to achieve state of the art performance on various
 canonical artificial intelligence tasks.  It is often the case that training these models
 can take a long time and require a large, labeled dataset.  Once trained on one task, the
 learned parameters of a model can be used to seed the layers of a new, hybrid model which
@@ -8,7 +8,7 @@ can then build upon the original model to learn a different task.  For example, 
 classification networks like Alexnet are able to extract features from an input image.
 The Alexnet model can be adapted to other image classification tasks by initializing the
 feature extraction parameters with those obtained by training Alexnet on the ILSVCR2012
-dataset and adapting the output layers to accomadate the criterion of the new task.
+dataset and adapting the output layers to accomodate the criterion of the new task.
 
 The model included here is an implmentation of the trasnfer learning paradigm described in
 the [paper](http://www.di.ens.fr/willow/pdfscurrent/oquab14cvpr.pdf):
@@ -21,7 +21,7 @@ A full description of this model implementation can be found in our
 [blog](http://www.nervanasys.com/blog/).
 
 
-## Useage
+## Usage
 
 To start a fresh new training run that trains for 10 epochs:
 ```
