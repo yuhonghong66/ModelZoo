@@ -22,16 +22,16 @@ WEIGHTS_FILE=${WEIGHTS_URL##*/}
 echo "Downloading weights file from ${WEIGHTS_URL}"
 curl -o $WEIGHTS_FILE $WEIGHTS_URL 2> /dev/null
 
-python -u fast_rcnn_alexnet.py --test_only -i ${EXECUTOR_NUMBER} -vvv --model_file $WEIGHTS_FILE --no_progress_bar > output.dat
+python -u ${WORKSPACE}/examples/fast-rcnn/test.py -i ${EXECUTOR_NUMBER} --model_file $WEIGHTS_FILE > output.dat
 rc=$?
 if [ $rc -ne 0 ];then
     exit $rc
 fi
 
 # get the top-1 misclass
-acc=`tail -n 2 output.dat | grep "accuracy" | sed "s/.*accuracy = //" | sed "s/ \%.*//"`
+acc=`tail -n 2 output.dat | grep "accuracy" | sed "s/.*Mean AP = //"`
 
-pass=`echo $acc'>'53 | bc -l`
+pass=`echo $acc'>'0.55 | bc -l`
 
 rc=0
 if [ $pass -ne 1 ];then
