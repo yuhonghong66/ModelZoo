@@ -4,7 +4,7 @@
 
 ### Models
 
-#### [Googlenet](https://github.com/nervanazoo/NervanaModelZoo/tree/master/ImageClassification/ILSVRC2012/Googlenet)
+#### [Googlenet](https://github.com/NervanaSystems/ModelZoo/tree/master/ImageClassification/ILSVRC2012/Googlenet)
 
 This is an implementation of the GoogLeNet model for image classification described in
 [Szegedy et. al. 2014](http://arxiv.org/pdf/1409.4842.pdf).
@@ -18,7 +18,7 @@ Rabinovich, Andrew
 arXiv:1409.4842
 ```
 
-#### [VGG](https://github.com/nervanazoo/NervanaModelZoo/tree/master/ImageClassification/ILSVRC2012/VGG)
+#### [VGG](https://github.com/NervanaSystems/ModelZoo/tree/master/ImageClassification/ILSVRC2012/VGG)
 
 We have adapted the 16 and 19 layer VGG model that is available for Caffe for use with neon.  
 
@@ -30,7 +30,7 @@ K. Simonyan, A. Zisserman
 arXiv:1409.1556
 ```
 
-#### [Alexnet](https://github.com/nervanazoo/NervanaModelZoo/tree/master/ImageClassification/ILSVRC2012/Alexnet)
+#### [Alexnet](https://github.com/NervanaSystems/ModelZoo/tree/master/ImageClassification/ILSVRC2012/Alexnet)
 
 An implementation of an image classification model based on
 [Krizhevsky, Sutskever and Hinton 2012](http://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks).
@@ -56,7 +56,7 @@ required by the neon ImageLoader class.  For instructions on this please see the
 
 ### Models
 
-#### [Deep Residual Network](https://github.com/nervanazoo/NervanaModelZoo/tree/master/ImageClassification/CIFAR10/DeepResNet)
+#### [Deep Residual Network](https://github.com/NervanaSystems/ModelZoo/tree/master/ImageClassification/CIFAR10/DeepResNet)
 
 An implementation of deep residual networks as described in [He, Zhang, Ren, Sun 2015](http://arxiv.org/abs/1512.03385).
 
@@ -67,7 +67,7 @@ Deep Residual Learning for Image Recognition
 arXiv preprint arXiv:1512.03385, 2015.
 ```
 
-#### All CNN Model
+#### [All CNN Model](https://github.com/NervanaSystems/ModelZoo/tree/master/ImageClassification/CIFAR10/All_CNN)
 
 An implementation of a deep convolutional neural network model inspired by the paper
 [Springenberg, Dosovitskiy, Brox, Riedmiller 2014](http://arxiv.org/abs/1412.6806). 
@@ -82,7 +82,7 @@ arXiv preprint arXiv:1412.6806, 2014.
 ### Data
 
 The Deep Residual Network model
-[readme.md](https://github.com/nervanazoo/NervanaModelZoo/blob/master/ImageClassification/CIFAR10/DeepResNet/readme.md)
+[readme.md](./CIFAR10/DeepResNet/readme.md)
 provides instructions on converting the CIFAR-10 dataset to the format required by the neon ImageLoader class. 
 The All CNN model script will download the CIFAR-10 dataset automatically.
 

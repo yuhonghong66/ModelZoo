@@ -1,6 +1,6 @@
 #Image Captioning
 
-## [LSTM](https://github.com/nervanazoo/NervanaModelZoo/tree/master/ImageCaptioning/LSTM)
+## [LSTM](https://github.com/NervanaSystems/ModelZoo/tree/master/ImageCaptioning/LSTM)
 
 LSTM image captioning model based on [CVPR 2015 paper](http://arxiv.org/abs/1411.4555): 
 
