@@ -18,7 +18,7 @@ using the following link: [trained model weights on task 15][S3_WEIGHTS_FILE].
 [S3_WEIGHTS_FILE]: https://s3-us-west-1.amazonaws.com/nervana-modelzoo/bAbI/babi_task15.p
 
 ### neon version
-The model weigth file above has been generated using neon version tag [v1.4.0]((https://github.com/NervanaSystems/neon/releases/tag/v1.4.0).
+The model weight file above has been generated using neon version tag [v1.4.0]((https://github.com/NervanaSystems/neon/releases/tag/v1.4.0).
 It may not work with other versions.
 
 ### Performance

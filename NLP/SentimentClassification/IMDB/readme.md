@@ -13,7 +13,7 @@ The trained weights file can be downloaded from AWS using the following link:
 [S3_WEIGHTS_FILE]: https://s3-us-west-1.amazonaws.com/nervana-modelzoo/imdb_lstm/imdb_lstm.p
 
 ### neon version
-The model weigth file above has been generated using neon version tag [v1.4.0]((https://github.com/NervanaSystems/neon/releases/tag/v1.4.0).
+The model weight file above has been generated using neon version tag [v1.4.0]((https://github.com/NervanaSystems/neon/releases/tag/v1.4.0).
 It may not work with other versions.
 
 ### Performance

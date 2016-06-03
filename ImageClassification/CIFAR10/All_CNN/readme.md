@@ -13,12 +13,12 @@ The trained weights file can be downloaded from AWS
 
 
 ### neon version
-The model weigth file above has been generated using neon version tag [v1.4.0]((https://github.com/NervanaSystems/neon/releases/tag/v1.4.0).
+The model weight file above has been generated using neon version tag [v1.4.0]((https://github.com/NervanaSystems/neon/releases/tag/v1.4.0).
 It may not work with other versions.
 
 ### Performance
-This model is acheiving 89.5% top-1 accuracy on the validation data set.  This accuracy is 
-acheived using zca whitened, global contrast normalized data, without crops or flips.
+This model is achieving 89.5% top-1 accuracy on the validation data set.  This accuracy is 
+achieved using zca whitened, global contrast normalized data, without crops or flips.
 This is the same performance we achieve running the same model configuration and data through Caffe.  
 
 

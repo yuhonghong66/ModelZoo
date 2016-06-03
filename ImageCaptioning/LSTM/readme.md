@@ -24,9 +24,9 @@ found in the following [CVPR-2015 paper](http://arxiv.org/abs/1411.4555):
 
 The model was trained for 15 epochs where 1 epoch is 1 pass over all 5 captions of each image. 
 Training data was shuffled each epoch. To evaluate on the test set, download the model and weights, 
-activate the neon virtualenv and ifrom the root neon directory run:
+activate the neon virtualenv and from the root neon directory run:
 
-     python examples/image_caption.py --test_only --model_file [path_to_weights]
+     python examples/image_caption.py --model_file [path_to_weights]
         
 To train the model from scratch for 15 epochs use the command:
 
