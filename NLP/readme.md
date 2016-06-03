@@ -2,7 +2,7 @@
 
 ## Question Answer
 
-### [bAbI](https://github.com/nervanazoo/NervanaModelZoo/tree/master/NLP/QandA/bAbI)
+### [bAbI](./bAbI)
 
 Facebook's baseline GRU/LSTM model on the bAbI dataset.
 
@@ -16,7 +16,7 @@ arXiv preprint arXiv:1502.05698 (2015).
 
 ### Sentiment classification
 
-## [IMDB](https://github.com/nervanazoo/NervanaModelZoo/tree/master/NLP/SentimentClassification/IMDB)
+## [IMDB](./IMDB)
 
 LSTM model for solving the IMDB sentiment classification task.
 

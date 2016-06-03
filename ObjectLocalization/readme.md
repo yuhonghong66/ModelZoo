@@ -1,6 +1,6 @@
 #Object localization
 
-## [Fast-RCNN](https://github.com/nervanazoo/NervanaModelZoo/tree/master/ObjectLocalization/FastRCNN)
+## [Fast-RCNN](./FastRCNN)
 Fast-RCNN model trained on PASCAL VOC dataset
 
 

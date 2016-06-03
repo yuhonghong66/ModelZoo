@@ -15,7 +15,7 @@
 # ----------------------------------------------------------------------------
 
 # test script
-TEST_SCRIPT="cifar10_allcnn.py"
+TEST_SCRIPT=${WORKSPACE}/examples/cifar10_allcnn.py
 
 # download the weights file
 WEIGHTS_URL=`grep "\[S3_WEIGHTS_FILE\]:" readme.md  | sed "s/\[S3_WEIGHTS_FILE\]://" | sed "s/ //"`
@@ -23,21 +23,22 @@ WEIGHTS_FILE=${WEIGHTS_URL##*/}
 echo "Downloading weights file from ${WEIGHTS_URL}"
 curl -o $WEIGHTS_FILE $WEIGHTS_URL 2> /dev/null
 
-python -u $TEST_SCRIPT --test_only -i ${EXECUTOR_NUMBER} -vvv --model_file $WEIGHTS_FILE --no_progress_bar > output.dat
+python -u $TEST_SCRIPT --test_only -i ${EXECUTOR_NUMBER} -vvv \
+           --model_file $WEIGHTS_FILE --no_progress_bar > output.dat
 rc=$?
 if [ $rc -ne 0 ];then
     exit $rc
 fi
 
 # get the top-1 misclass
-top1=`tail -n 1 output.dat | sed "s/.*Accuracy: //" | sed "s/ \% (Top-1).*//"`
+top1=`tail -n 1 output.dat | sed "s/.*Misclassification error = //" | sed "s/\%.*//"`
 
 top1pass=0
-top1pass=`echo $top1'>'85 | bc -l`
+top1pass=`echo $top1'<'11 | bc -l`
 
 rc=0
 if [ $top1pass -ne 1 ];then
-    echo "Top1 Accuracy too low "$top1
+    echo "Top1 Misclass too high "$top1
     rc=1
 fi
 

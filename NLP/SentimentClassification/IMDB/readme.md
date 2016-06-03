@@ -5,7 +5,7 @@ This is an implementation of a LSTM model to solve the IMDB sentiment classifica
 ### Model script
 
 
-The [imdb_lstm.py](https://github.com/nervanazoo/NervanaModelZoo/blob/master/NLP/SentimentClassification/IMDB/imdb_lstm.py)
+The [imdb_lstm.py](./imdb_lstm.py)
 script shows how to train the model.
 
 ### Trained weights

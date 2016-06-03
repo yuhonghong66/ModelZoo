@@ -4,41 +4,38 @@ This is an implementation of a deep convolutional neural network model inspired 
 [Springenberg, Dosovitskiy, Brox, Riedmiller 2014](http://arxiv.org/abs/1412.6806). 
 
 ### Model script
-The model run script is included below [cifar10_allcnn.py](./cifar10_allcnn.py).
+The model run script is included in the neon repo examples [cifar10_allcnn.py](https://github.com/NervanaSystems/neon/blob/master/examples/cifar10_allcnn.py).
 
 ### Trained weights
 The trained weights file can be downloaded from AWS 
 [cifar10_allcnn_e350.p][S3_WEIGHTS_FILE].
 [S3_WEIGHTS_FILE]: https://s3-us-west-1.amazonaws.com/nervana-modelzoo/cifar10_allcnn/cifar10_allcnn_e350.p
 
+
+### neon version
+The model weigth file above has been generated using neon version tag [v1.4.0]((https://github.com/NervanaSystems/neon/releases/tag/v1.4.0).
+It may not work with other versions.
+
 ### Performance
-This model is acheiving 89.5% top-1 accuracy on the validation data set.  This is done using zca whitened, 
-global contrast normalized data, without crops or flips.  This is the same performance we achieve running the 
-same model configuration and data through Caffe.  
+This model is acheiving 89.5% top-1 accuracy on the validation data set.  This accuracy is 
+acheived using zca whitened, global contrast normalized data, without crops or flips.
+This is the same performance we achieve running the same model configuration and data through Caffe.  
+
 
 ### Instructions
-This script was tested with the 
-[neon commit SHA e7ab2c2e2](https://github.com/NervanaSystems/neon/commit/e7ab2c2e27f113a4d36d17ba8c79546faed7d916).  
-Make sure that your local repo is synced to this commit and run the 
-[installation procedure](http://neon.nervanasys.com/docs/latest/installation.html) before proceeding.
 
-
-If neon is installed into a `virtualenv`, make sure that it is activated before running the commands below.  Also, the commands below use the GPU backend by default so add `-b cpu` if you are running on a system without a compatible GPU.
-
+Download the serialized model file from the location above.  The following commands should
+be run from the neon installation root directory.
 
 To test the model performance on the validation data set use the following command:
 ```
-python cifar10_allcnn.py --model_file cifar10_allcnn_e350.p -eval 1
+python examples/cifar10_allcnn.py --model_file cifar10_allcnn_e350.p -eval 1
 ```
 
 To train the model from scratch for 350 epochs, use the command:
 ```
-python cifar10_allcnn.py -b gpu -e 350 -s cifar10_allcnn_trained.p
+python examples/cifar10_allcnn.py -b gpu -e 350 -s cifar10_allcnn_trained.p
 ```
-
-Additional options are available to add features like saving checkpoints and displaying logging information, 
-use the `--help` option for details.
-
 
 ## Benchmarks
 
@@ -50,19 +47,19 @@ GPU: GeForce GTX TITAN X
 CUDA Driver Version 7.0
 ```
 
-The run times for the fprop and bprop pass are given in the table below.  The same model configuration is used in neon and caffe.  50 iterations are timed in each framework and only the mean value is reported. 
+The run times for the fprop and bprop pass are given in the table below.  The same model configuration
+is used in neon and caffe.  50 iterations are timed in each framework and only the
+mean value is reported. 
 
 
 ```
 -------------------------------------------
 |    Func     | neon (mean) | caffe (mean)|
 -------------------------------------------
-| fprop       |    14 ms    |    19 ms    |
-| bprop       |    34 ms    |    65 ms    |
-| update      |     3 ms    |    *        | 
-| iteration   |    51 ms    |    85 ms    |
+| fprop       |    10 ms    |    19 ms    |
+| bprop       |    22 ms    |    65 ms    |
+| iteration   |    32 ms    |    85 ms    |
 -------------------------------------------
-* caffe update operation may be included in bprop or iteration time but is not individually timed.
 ```
 
 

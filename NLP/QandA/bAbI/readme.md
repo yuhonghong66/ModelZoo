@@ -8,8 +8,8 @@ The bAbI dataset contains 20 different question answering tasks.
 
 ### Model script
 
-The scripts [train.py](https://github.com/nervanazoo/NervanaModelZoo/blob/master/NLP/QandA/bAbI/train.py)
-and [demo.py](https://github.com/nervanazoo/NervanaModelZoo/blob/master/NLP/QandA/bAbI/demo.py) included
+The scripts [train.py](./train.py)
+and [demo.py](./demo.py) included
 here show how to train and run the model, respectively.
 
 ### Instructions

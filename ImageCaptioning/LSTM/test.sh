@@ -22,7 +22,8 @@ WEIGHTS_FILE=${WEIGHTS_URL##*/}
 echo "Downloading weights file from ${WEIGHTS_URL}"
 curl -o $WEIGHTS_FILE $WEIGHTS_URL 2> /dev/null
 
-python -u image_caption.py --test_only -i ${EXECUTOR_NUMBER} -vvv --model_file $WEIGHTS_FILE --no_progress_bar > output.dat
+python -u ${WORKSPACE}/examples/image_caption.py --test_only -i ${EXECUTOR_NUMBER} -vvv \
+            --model_file $WEIGHTS_FILE --no_progress_bar > output.dat
 rc=$?
 if [ $rc -ne 0 ];then
     exit $rc
@@ -30,7 +31,7 @@ fi
 
 # get the top-1 misclass
 bleu=`tail -n 1 output.dat | sed "s/BLEU = //" | sed "s/\/.*//"`
-bleupass=`echo $bleu'>'12 | bc -l`
+bleupass=`echo $bleu'>'53 | bc -l`
 
 rc=0
 if [ $bleupass -ne 1 ];then
