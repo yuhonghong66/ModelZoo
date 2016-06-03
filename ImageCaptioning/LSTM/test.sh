@@ -22,7 +22,7 @@ WEIGHTS_FILE=${WEIGHTS_URL##*/}
 echo "Downloading weights file from ${WEIGHTS_URL}"
 curl -o $WEIGHTS_FILE $WEIGHTS_URL 2> /dev/null
 
-python -u ${WORKSPACE}/examples/image_caption.py --test_only -i ${EXECUTOR_NUMBER} -vvv \
+python -u ${WORKSPACE}/examples/image_caption.py -i ${EXECUTOR_NUMBER} -vvv \
             --model_file $WEIGHTS_FILE --no_progress_bar > output.dat
 rc=$?
 if [ $rc -ne 0 ];then
