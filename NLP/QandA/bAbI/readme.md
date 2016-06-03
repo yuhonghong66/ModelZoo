@@ -2,60 +2,24 @@
 
 This is an implementation of Facebook's baseline GRU/LSTM model on the bAbI dataset 
 [Weston et al. 2015](https://research.facebook.com/researchers/1543934539189348).
-It includes an interactive demo script [demo.py](./demo.py).
 
 The bAbI dataset contains 20 different question answering tasks.
 
 ### Model script
 
-The scripts [train.py](./train.py)
-and [demo.py](./demo.py) included
-here show how to train and run the model, respectively.
-
-### Instructions
-
-These scripts and model weights file are compatible with neon commit [e7ab2c2e2](https://github.com/NervanaSystems/neon/commit/e7ab2c2e27f113a4d36d17ba8c79546faed7d916).
-
-First run the `train.py` script to get a pickle file of model weights. Use the command line arguments `--rlayer_type` 
-to choose between LSTMs or GRUs, `--save_path` to specify the output pickle file location, and `-t` to specify which
-bAbI task to run.
-```
-python train.py -e 20 --rlayer_type gru --save_path babi.p -t 15
-```
-
-Second run the demo with the newly created pickle file.
-```
-python demo.py -t 15 --rlayer_type gru --model_weights babi.p
-```
-```
-Task is en/qa15_basic-deduction
-
-Example from test set:
-
-Story
-Wolves are afraid of mice.
-Sheep are afraid of mice.
-Winona is a sheep.
-Mice are afraid of cats.
-Cats are afraid of wolves.
-Jessica is a mouse.
-Emily is a cat.
-Gertrude is a wolf.
-
-Question
-What is emily afraid of?
-
-Answer
-wolf
-
-Please enter a story:
-```
-At which point you can play around with your own stories, questions, and answers.
+The scripts for this model are included in the neon repo examples directory
+([link](https://github.com/NervanaSystems/neon/tree/master/examples/babi)).
+See the [readme](https://github.com/NervanaSystems/neon/blob/master/examples/babi/README.md)
+there for instructions on how to train the model and run the demo.
 
 ### Trained weights
 The trained weights file for a GRU network trained on task 15 can be downloaded from AWS
 using the following link: [trained model weights on task 15][S3_WEIGHTS_FILE].
 [S3_WEIGHTS_FILE]: https://s3-us-west-1.amazonaws.com/nervana-modelzoo/bAbI/babi_task15.p
+
+### neon version
+The model weigth file above has been generated using neon version tag [v1.4.0]((https://github.com/NervanaSystems/neon/releases/tag/v1.4.0).
+It may not work with other versions.
 
 ### Performance
 Task Number                  | FB LSTM Baseline | Neon QA GRU
@@ -74,7 +38,7 @@ QA11 - Basic Coreference     | 72               |  67.6
 QA12 - Conjunction           | 74               |  63.9
 QA13 - Compound Coreference  | 94               |  91.9
 QA14 - Time Reasoning        | 27               |  36.8
-QA15 - Basic Deduction       | 21               |  51.4
+QA15 - Basic Deduction       | 21               |  52.6
 QA16 - Basic Induction       | 23               |  50.1
 QA17 - Positional Reasoning  | 51               |  49.0
 QA18 - Size Reasoning        | 52               |  90.5

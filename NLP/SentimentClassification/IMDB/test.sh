@@ -22,21 +22,22 @@ WEIGHTS_FILE=${WEIGHTS_URL##*/}
 echo "Downloading weights file from ${WEIGHTS_URL}"
 curl -o $WEIGHTS_FILE $WEIGHTS_URL 2> /dev/null
 
-python -u imdb_lstm.py --test_only -i ${EXECUTOR_NUMBER} -vvv --model_file $WEIGHTS_FILE --no_progress_bar > output.dat
+python -u ${WORKSPACE}/examples/imdb_lstm.py -i ${EXECUTOR_NUMBER} -vvv --no_progress_bar \
+                                             --model_file $WEIGHTS_FILE > output.dat
 rc=$?
 if [ $rc -ne 0 ];then
     exit $rc
 fi
 
 # get the top-1 misclass
-train_acc=`tail -n 2 output.dat | grep "Train" | sed "s/.*Accuracy = //"` 
-test_acc=`tail -n 2 output.dat |  grep "Test" | sed "s/.*Accuracy = //"` 
+train_acc=`tail -n 2 output.dat | grep "Train" | sed "s/.*Accuracy.*\[ //" | sed "s/\].*//"`
+test_acc=`tail -n 2 output.dat |  grep "Test"  | sed "s/.*Accuracy.*\[ //" | sed "s/\].*//"`
 
 train_pass=0
 test_pass=0
 
-train_pass=`echo $train_acc'>'47 | bc -l`
-test_pass=`echo $test_acc'>'47 | bc -l`
+train_pass=`echo $train_acc'>'90 | bc -l`
+test_pass=`echo $test_acc'>'80 | bc -l`
 
 rc=0
 if [ $train_pass -ne 1 ];then

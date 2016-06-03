@@ -22,7 +22,8 @@ WEIGHTS_FILE=${WEIGHTS_URL##*/}
 echo "Downloading weights file from ${WEIGHTS_URL}"
 curl -o $WEIGHTS_FILE $WEIGHTS_URL 2> /dev/null
 
-python -u train.py --test_only -i ${EXECUTOR_NUMBER} -vvv --model_file $WEIGHTS_FILE --task 15 --no_progress_bar > output.dat
+python -u ${WORKSPACE}/examples/babi/train.py -e 1 -i ${EXECUTOR_NUMBER} -vvv \
+    --model_file $WEIGHTS_FILE --task 15 --no_progress_bar > output.dat
 
 rc=$?
 if [ $rc -ne 0 ];then
@@ -36,8 +37,8 @@ testacc=`tail -n 2 output.dat | grep "Test" | sed "s/.*Accuracy = //" | sed "s/\
 trainpass=0
 testpass=0
 
-trainpass=`echo $trainacc'>'53 | bc -l`
-testpass=`echo $testacc'>'53 | bc -l`
+trainpass=`echo $trainacc'>'60 | bc -l`
+testpass=`echo $testacc'>'50 | bc -l`
 
 rc=0
 if [ $trainpass -ne 1 ];then
