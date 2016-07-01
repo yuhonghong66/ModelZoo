@@ -2,7 +2,7 @@
 
 ## Question Answer
 
-### [bAbI](./bAbI)
+### [bAbI](./QandA/bAbI)
 
 Facebook's baseline GRU/LSTM model on the bAbI dataset.
 
