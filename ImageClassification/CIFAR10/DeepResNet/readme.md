@@ -70,7 +70,7 @@ Ubuntu 14.04.2 LTS
 GPU: GeForce GTX TITAN X
 CUDA Driver Version 7.0
 ```
-
+```
 -----------------------------
 |    Func     |    Mean     |
 -----------------------------
@@ -79,3 +79,4 @@ CUDA Driver Version 7.0
  ------------- -------------
 | Total       |  103.3  ms  |
 -----------------------------
+```
