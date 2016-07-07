@@ -70,6 +70,8 @@ Ubuntu 14.04.2 LTS
 GPU: GeForce GTX TITAN X
 CUDA Driver Version 7.0
 ```
+
+For a batch size of 128 images, the runtimes are:
 ```
 -----------------------------
 |    Func     |    Mean     |
