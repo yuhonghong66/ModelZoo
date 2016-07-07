@@ -20,8 +20,10 @@ from neon.layers import MergeSum, SkipNode
 from neon.optimizers import GradientDescentMomentum, Schedule
 from neon.transforms import Rectlin, Softmax, CrossEntropyMulti, Misclassification
 from neon.models import Model
-from neon.data import ImageLoader
+from neon.data import ImageLoader, ImageParams, DataLoader
 from neon.callbacks.callbacks import Callbacks
+
+import os
 
 # parse the command line arguments (generates the backend)
 parser = NeonArgparser(__doc__)
@@ -29,11 +31,51 @@ parser.add_argument('--depth', type=int, default=9,
                     help='depth of each stage (network depth will be 6n+2)')
 args = parser.parse_args()
 
-# setup data provider
-imgset_options = dict(inner_size=32, scale_range=40, repo_dir=args.data_dir)
-train = ImageLoader(set_name='train', shuffle=True, do_transforms=True, **imgset_options)
-test = ImageLoader(set_name='validation', shuffle=False, do_transforms=False, **imgset_options)
 
+def extract_images(out_dir, padded_size):
+    '''
+    Save CIFAR-10 dataset as PNG files
+    '''
+    import numpy as np
+    from neon.data import load_cifar10
+    from PIL import Image
+    dataset = dict()
+    dataset['train'], dataset['val'], _ = load_cifar10(out_dir, normalize=False)
+    pad_size = (padded_size - 32) // 2 if padded_size > 32 else 0
+    pad_width = ((0, 0), (pad_size, pad_size), (pad_size, pad_size))
+
+    for setn in ('train', 'val'):
+        data, labels = dataset[setn]
+
+        img_dir = os.path.join(out_dir, setn)
+        ulabels = np.unique(labels)
+        for ulabel in ulabels:
+            subdir = os.path.join(img_dir, str(ulabel))
+            if not os.path.exists(subdir):
+                os.makedirs(subdir)
+
+        for idx in range(data.shape[0]):
+            im = np.pad(data[idx].reshape((3, 32, 32)), pad_width, mode='mean')
+            im = np.uint8(np.transpose(im, axes=[1, 2, 0]).copy())
+            im = Image.fromarray(im)
+            path = os.path.join(img_dir, str(labels[idx][0]), str(idx) + '.png')
+            im.save(path, format='PNG')
+
+# setup data provider
+train_dir = os.path.join(args.data_dir, 'train')
+test_dir = os.path.join(args.data_dir, 'val')
+if not (os.path.exists(train_dir) and os.path.exists(test_dir)):
+    extract_images(args.data_dir, 40)
+
+# setup data provider
+shape = dict(channel_count=3, height=32, width=32)
+train_params = ImageParams(center=False, flip=True, **shape)
+test_params = ImageParams(**shape)
+common = dict(target_size=1, nclasses=10)
+
+train = DataLoader(set_name='train', repo_dir=train_dir, media_params=train_params,
+                   shuffle=True, **common)
+test = DataLoader(set_name='val', repo_dir=test_dir, media_params=test_params, **common)
 
 
 def conv_params(fsize, nfm, stride=1, relu=True):
@@ -69,7 +111,7 @@ layers.append(Affine(nout=10, init=Kaiming(local=False), batch_norm=True, activa
 
 model = Model(layers=layers)
 opt = GradientDescentMomentum(0.1, 0.9, wdecay=0.0001,
-                              schedule=Schedule([90, 135], 0.1))
+                              schedule=Schedule([90, 123], 0.1))
 
 # configure callbacks
 callbacks = Callbacks(model, eval_set=test, metric=Misclassification(), **args.callback_args)

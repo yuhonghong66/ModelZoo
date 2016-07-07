@@ -13,18 +13,33 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ----------------------------------------------------------------------------
+import os
+
 from neon.util.argparser import NeonArgparser
 from neon.util.persist import load_obj
-from neon.transforms import Misclassification
+from neon.transforms import Misclassification, CrossEntropyMulti
+from neon.optimizers import GradientDescentMomentum
+from neon.layers import GeneralizedCost
 from neon.models import Model
-from neon.data import ImageLoader
+from neon.data import DataLoader, ImageParams
 
 # parse the command line arguments (generates the backend)
 parser = NeonArgparser(__doc__)
 args = parser.parse_args()
 
 # setup data provider
-test_set = ImageLoader(set_name='validation', repo_dir=args.data_dir,
-                       inner_size=32, scale_range=40, do_transforms=False)
+test_dir = os.path.join(args.data_dir, 'val')
+shape = dict(channel_count=3, height=32, width=32)
+test_params = ImageParams(center=True, flip=False, **shape)
+common = dict(target_size=1, nclasses=10)
+test_set = DataLoader(set_name='val', repo_dir=test_dir, media_params=test_params, **common)
+
 model = Model(load_obj(args.model_file))
-print 'Accuracy: %.1f %% (Top-1)' % (1.0-model.eval(test_set, metric=Misclassification())*100)
+cost = GeneralizedCost(costfunc=CrossEntropyMulti())
+opt = GradientDescentMomentum(0.1, 0.9, wdecay=0.0001)
+model.initialize(test_set, cost=cost)
+
+acc = 1.0 - model.eval(test_set, metric=Misclassification())[0]
+print 'Accuracy: %.1f %% (Top-1)' % (acc*100.0)
+
+model.benchmark(test_set, cost=cost, optimizer=opt)

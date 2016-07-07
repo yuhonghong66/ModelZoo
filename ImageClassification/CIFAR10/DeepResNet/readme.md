@@ -5,57 +5,40 @@ structured as a very deep network with skip connections designed to have convolu
 adjusting to residual activations.  The training protocol uses minimal pre-processing (mean
 subtraction) and very simple data augmentation (shuffling, flipping, and cropping).  All model
 parameters (even batch norm parameters) are updated using simple stochastic gradient descent with
-weight decay.  The learning rate is dropped only twice (at 90 and 135 epochs).
+weight decay.  The learning rate is dropped only twice (at 90 and 123 epochs).
 
 ### Acknowledgments
 Many thanks to Dr. He and his team at MSRA for their helpful input in replicating the model as
 described in their paper.
 
 ### Model script
-The model train script is included ([cifar10_msra.py](./cifar10_msra.py)).
+The model train script is included ([resnet_cifar10.py](./resnet_cifar10.py)).
 
 ### Trained weights
-The trained weights file can be downloaded from AWS
-
-| Model Depth | Model File |
-| ----------- | ---------- |
-|  20 | [cifar10_msra_020_e180.p](https://s3-us-west-1.amazonaws.com/nervana-modelzoo/cifar10_msra_e180.p) |
-|  32 | [cifar10_msra_032_e180.p](https://s3-us-west-1.amazonaws.com/nervana-modelzoo/cifar10_msra_e180.p) |
-|  56 | [cifar10_msra_056_e180.p](https://s3-us-west-1.amazonaws.com/nervana-modelzoo/cifar10_msra_e180.p) |
-| 110 | [cifar10_msra_110_e180.p][S3_WEIGHTS_FILE] |
-
-[S3_WEIGHTS_FILE]: https://s3-us-west-1.amazonaws.com/nervana-modelzoo/cifar10_msra_e180.p
+The trained weights file for a model with depth of 56 can be downloaded from AWS
+[resnet56_e179.p][S3_WEIGHTS_FILE]
+[S3_WEIGHTS_FILE]: https://s3-us-west-1.amazonaws.com/nervana-modelzoo/resnet/cifar10/resnet56_e179.p
 
 ### Performance
-Training this model with the options described below should be able to achieve above 93.6% top-1
+Training this model with the options described below should be able to achieve above 92.7% top-1
 accuracy using only mean subtraction, random cropping, and random flips.
 
 ## Instructions
-This script was tested with [neon version 1.2.1](https://github.com/NervanaSystems/neon/tree/v1.2.1).
+This script was tested with [neon version 1.5.0](https://github.com/NervanaSystems/neon/tree/v1.5.0).
 Make sure that your local repo is synced to this commit and run the [installation
 procedure](http://neon.nervanasys.com/docs/latest/installation.html) before proceeding.
-Commit SHA for v1.2.1 is  `c460e6c12cc4ea6e7453c0335afadf1f5110a4f7`
+Commit SHA for v1.5.0 is  `8a5b2c45784499cd3aba3c322ea10b3661c2a2a9`
 
-In addition, we use the branch that implements the merge sum layer type.
-
-This example uses the `ImageLoader` module to load the images for consumption while applying random
-cropping, flipping, and shuffling.  Prior to beginning training, you need to write out the padded
-cifar10 images into a macrobatch repository.  From your top-level neon direcotry, run:
-
-```
-neon/data/batch_writer.py \
-    --set_type cifar10 \
-    --data_dir <path-to-save-batches> \
-    --macro_size 10000 \
-    --target_size 40
-```
-
+This example uses the `DataLoader` module to load the images for consumption while applying random
+cropping, flipping, and shuffling.  To use the DataLoader, the script will generate PNG files from
+the CIFAR-10 dataset the first time it is run and will saved them to the directory provided by
+the "-w" or "--data_dir" option to the script.
 Note that it is good practice to choose your `data_dir` to be local to your machine in order to
-avoid having `ImageLoader` module perform reads over the network.
+avoid having `DataLoader` module perform reads over the network.
 
 Once the batches have been written out, you may initiate training:
 ```
-cifar10_msra.py -r 0 -vv \
+resnet_cifar10.py -r 0 -vv \
     --log <logfile> \
     --epochs 180 \
     --save_path <model-save-path> \
@@ -73,10 +56,10 @@ linear), making the total network `6n+2` layers deep.  For depth arguments of 3,
 network depths of 20, 32, 56, and 110.
 
 If you just want to run evaluation, you can use the much simpler script that loads the serialized
-model and evaluates it on the validation set:
+model and evaluates it on the validation set and runs a speed benchmark:
 
 ```
-cifar10_eval.py -vv --model_file <model-save-path>
+resnet_eval.py -vv --model_file <model-save-path> -w <path_to_dataset>
 ```
 
 ## Benchmarks
@@ -88,24 +71,11 @@ GPU: GeForce GTX TITAN X
 CUDA Driver Version 7.0
 ```
 
-The memory usage and per-epoch training time of each network configuration, along with final
-validation error is shown in the table below.  We observed that the error rates were consistently
-lower than what was cited in the original paper.  Our hypothesis is that this may be due to our
-inclusion of a final batch norm transformation at the output affine layer.
-
-| Model Depth  | GPU Memory Footprint | Seconds per Epoch | Validation Error % |
-| ------------ | -------------------- | ----------------- | ------------------ |
-|  20 |  521 MiB | 11 | 8.29 |
-|  32 |  636 MiB | 18 | 7.26 |
-|  56 |  860 MiB | 30 | 6.31 |
-| 110 | 1277 MiB | 60 | 6.00 |
-
-The total amount of time to train the 56 layer network for 180 epochs was about 90 minutes with the
-described machine and GPU specifications.
-
-The evolution of validation misclassification error for the various layer depths can be seen in the
-figures below.
-
-![validation error](./val_error.png)
-
-![validation error zoom](./val_error_zoom.png)
+-----------------------------
+|    Func     |    Mean     |
+-----------------------------
+| fprop       |   21.0  ms  |
+| bprop       |   82.3  ms  |
+ ------------- -------------
+| Total       |  103.3  ms  |
+-----------------------------
