@@ -23,7 +23,7 @@ echo "Downloading weights file from ${WEIGHTS_URL}"
 curl -o $WEIGHTS_FILE $WEIGHTS_URL 2> /dev/null
 
 python -u ${WORKSPACE}/examples/imdb_lstm.py -i ${EXECUTOR_NUMBER} -vvv --no_progress_bar \
-                                             --model_file $WEIGHTS_FILE > output.dat
+                                             --model_file $WEIGHTS_FILE -l output.dat
 rc=$?
 if [ $rc -ne 0 ];then
     exit $rc

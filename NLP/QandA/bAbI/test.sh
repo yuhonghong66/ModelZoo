@@ -23,7 +23,7 @@ echo "Downloading weights file from ${WEIGHTS_URL}"
 curl -o $WEIGHTS_FILE $WEIGHTS_URL 2> /dev/null
 
 python -u ${WORKSPACE}/examples/babi/train.py -e 1 -i ${EXECUTOR_NUMBER} -vvv \
-    --model_file $WEIGHTS_FILE --task 15 --no_progress_bar > output.dat
+    --model_file $WEIGHTS_FILE --task 15 --no_progress_bar -l output.dat
 
 rc=$?
 if [ $rc -ne 0 ];then

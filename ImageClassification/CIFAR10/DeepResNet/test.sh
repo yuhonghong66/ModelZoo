@@ -15,7 +15,7 @@
 # ----------------------------------------------------------------------------
 
 # test script
-TEST_SCRIPT="cifar10_eval.py"
+TEST_SCRIPT="resnet_eval.py"
 
 # download the weights file
 WEIGHTS_URL=`grep "\[S3_WEIGHTS_FILE\]:" readme.md  | sed "s/\[S3_WEIGHTS_FILE\]://" | sed "s/ //"`
@@ -23,7 +23,7 @@ WEIGHTS_FILE=${WEIGHTS_URL##*/}
 echo "Downloading weights file from ${WEIGHTS_URL}"
 curl -o $WEIGHTS_FILE $WEIGHTS_URL 2> /dev/null
 
-python -u $TEST_SCRIPT  -i ${EXECUTOR_NUMBER} -vvv --model_file $WEIGHTS_FILE --no_progress_bar -w /mnt/data/cifar10 > output.dat
+python -u $TEST_SCRIPT  -i ${EXECUTOR_NUMBER} -vvv --model_file $WEIGHTS_FILE --no_progress_bar -w /mnt/data/cifar10 -l output.dat
 rc=$?
 if [ $rc -ne 0 ];then
     exit $rc

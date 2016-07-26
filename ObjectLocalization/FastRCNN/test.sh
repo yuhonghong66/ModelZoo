@@ -22,14 +22,14 @@ WEIGHTS_FILE=${WEIGHTS_URL##*/}
 echo "Downloading weights file from ${WEIGHTS_URL}"
 curl -o $WEIGHTS_FILE $WEIGHTS_URL 2> /dev/null
 
-python -u ${WORKSPACE}/examples/fast-rcnn/test.py -i ${EXECUTOR_NUMBER} --model_file $WEIGHTS_FILE > output.dat
+python -u ${WORKSPACE}/examples/fast-rcnn/test.py -i ${EXECUTOR_NUMBER} --model_file $WEIGHTS_FILE -l output.dat
 rc=$?
 if [ $rc -ne 0 ];then
     exit $rc
 fi
 
 # get the top-1 misclass
-acc=`tail -n 2 output.dat | grep "accuracy" | sed "s/.*Mean AP = //"`
+acc=`tail -n 2 output.dat | grep "Mean AP" | sed "s/.*Mean AP = //"`
 
 pass=`echo $acc'>'0.55 | bc -l`
 
