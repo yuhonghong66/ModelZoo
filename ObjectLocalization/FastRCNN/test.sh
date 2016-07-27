@@ -22,7 +22,7 @@ WEIGHTS_FILE=${WEIGHTS_URL##*/}
 echo "Downloading weights file from ${WEIGHTS_URL}"
 curl -o $WEIGHTS_FILE $WEIGHTS_URL 2> /dev/null
 
-python -u ${WORKSPACE}/examples/fast-rcnn/test.py -i ${EXECUTOR_NUMBER} --model_file $WEIGHTS_FILE -l output.dat
+python -u ${WORKSPACE}/examples/fast-rcnn/test.py -i ${EXECUTOR_NUMBER} --model_file $WEIGHTS_FILE | tee output.dat 2>&1
 rc=$?
 if [ $rc -ne 0 ];then
     exit $rc

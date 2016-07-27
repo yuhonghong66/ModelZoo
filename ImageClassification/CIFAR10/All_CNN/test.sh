@@ -24,7 +24,7 @@ echo "Downloading weights file from ${WEIGHTS_URL}"
 curl -o $WEIGHTS_FILE $WEIGHTS_URL 2> /dev/null
 
 python -u $TEST_SCRIPT -i ${EXECUTOR_NUMBER} -vvv \
-           --model_file $WEIGHTS_FILE --no_progress_bar -l output.dat
+           --model_file $WEIGHTS_FILE --no_progress_bar | tee output.dat 2>&1
 rc=$?
 if [ $rc -ne 0 ];then
     exit $rc
