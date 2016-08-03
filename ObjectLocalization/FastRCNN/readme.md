@@ -23,7 +23,7 @@ are located in the neon examples [directory](https://github.com/NervanaSystems/n
 To measure the performance of the trained file (see above) using the Pascal VOC test data set, activate the 
 neon virtual env (if applicable) and run the following command from the neon repo root directory:
 ```
-python examples/fast-rcnn/test.py --model_file frcn_vgg.p
+python examples/fast-rcnn/run_validation.py --model_file frcn_vgg.p
 ```
 
 
