@@ -108,5 +108,5 @@ arXiv:1409.1556
 ## License
 
 For the model weight files please abide by the license posted with the Caffe weights files:
-[http://creativecommons.org/licenses/by-nc/4.0/](http://creativecommons.org/licenses/by-nc/4.0/) (non-commercial use only)
+[Creative Commons Attribution License](https://creativecommons.org/licenses/by/4.0/).
 
