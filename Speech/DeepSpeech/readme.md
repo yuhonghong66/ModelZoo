@@ -23,7 +23,7 @@ where /path/to/test_data_manifest should point to the location of the manifest f
 
 The trained model weights can be downloaded from AWS using the following link:
 [trained speech model weights][S3_WEIGHTS_FILE].
-[S3_WEIGHTS_FILE]: https://s3-us-west-1.amazonaws.com/nervana-modelzoo/Deep_Speech/Librispeech/librispeech_15_epochs.prm
+[S3_WEIGHTS_FILE]: https://s3-us-west-1.amazonaws.com/nervana-modelzoo/Deep_Speech/Librispeech/librispeech_16_epochs.prm
 
 The weights provded here have been verified to work with [neon version 1.7.0](https://github.com/NervanaSystems/neon/releases/tag/v1.7.0)
 The weights file may not work with other versions of neon.
