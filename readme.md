@@ -37,3 +37,6 @@ of the various tasks and models included here that address those tasks.
 
 ### Transfer Learning
   - Classification using multi scale sampling (PASCALVOC dataset)
+
+### Speech
+  - Deep Speech 2 (Librispeech dataset)
