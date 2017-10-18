@@ -33,7 +33,7 @@ Note there has been some changes to the format of the mean data subtraction;
 users with the old format may be prompted to run an update script before proceeding.
 
 
-This script was tested with the [neon release v1.4.0](https://github.com/NervanaSystems/neon/tree/v1.4.0)
+This script was tested with the [neon release v2.2.0](https://github.com/NervanaSystems/neon/tree/v2.2.0)
 (commit SHA bc196cb).
 Make sure that your local repo is synced to this commit and run the
 [installation procedure](http://neon.nervanasys.com/docs/latest/installation.html)
