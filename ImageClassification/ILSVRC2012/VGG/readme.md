@@ -95,7 +95,7 @@ The batch size is set to 64 in the examples above because with larger batch size
 
 ### Version compatibility
 
-Neon version: commit SHA [e7ab2c2e2](https://github.com/NervanaSystems/neon/commit/e7ab2c2e27f113a4d36d17ba8c79546faed7d916).
+Neon version: v2.2.0 (https://github.com/NervanaSystems/neon/tree/v2.2.0).
 
 ## Citation
 
