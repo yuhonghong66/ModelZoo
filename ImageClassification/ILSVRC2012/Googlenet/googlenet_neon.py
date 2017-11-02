@@ -148,7 +148,7 @@ cost = Multicost(costs=[GeneralizedCost(costfunc=CrossEntropyMulti()),
                  weights=[1, 0., 0.])  # We only want to consider the CE of the main path
 
 assert os.path.exists(args.model_file), 'script requires the trained weights file'
-model.load_params(args.model_file)
+model.load_params(args.model_file, load_states=False)
 model.initialize(val, cost)
 
 
