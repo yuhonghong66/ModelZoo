@@ -82,13 +82,6 @@ args = parser.parse_args()
 #train = make_train_config(args.subset_pct, args.manifest["train"], args.manifest_root, batch_size=args.batch_size, scale=[0.875, 0.583])
 val = make_val_config(args.subset_pct, args.manifest["val"], args.manifest_root, batch_size=args.batch_size, scale=[0.875, 0.875])
 
-#img_set_options = dict(repo_dir=args.data_dir, inner_size=224,
-#                       subset_pct=args.subset_pct)
-#train = ImageLoader(set_name='train', scale_range=(256, 384),
-#                    shuffle=True, **img_set_options)
-#test = ImageLoader(set_name='validation', scale_range=(256, 256), do_transforms=False,
-#                   shuffle=False, **img_set_options)
-
 init1 = Xavier(local=True)
 initfc = GlorotUniform()
 
@@ -126,7 +119,7 @@ model = Model(layers=layers)
 top5 = TopKMisclassification(k=5)
 callbacks = Callbacks(model, eval_set=val, metric=top5, **args.callback_args)
 
-model.load_params(args.model_file)
+model.load_params(args.model_file, load_states=False)
 mets=model.eval(val, metric=TopKMisclassification(k=5))
 print 'Validation set metrics:'
 print 'LogLoss: %.2f, Accuracy: %.1f %% (Top-1), %.1f %% (Top-5)' % (mets[0],
