@@ -26,7 +26,7 @@ During training, the images were randomly cropped and flipped horizontally but s
 To run the model, first the ImageNet data set needs to be uploaded and converted to the format compatible with neon (see  [instructions](http://neon.nervanasys.com/docs/latest/datasets.html#imagenet)).  Note there has been some changes to the format of the mean data subtraction; users with the old format may be prompted to run an update script before proceeding.
 
 
-This script works with the [neon release v2.2.0](https://github.com/NervanaSystems/neon/tree/v2.2.0).  Make sure that your local repo is synced to this commit and run the [installation procedure](http://neon.nervanasys.com/docs/latest/installation.html) before proceeding.
+This script works with the [neon release v2.3.0](https://github.com/NervanaSystems/neon/tree/v2.3.0).  Make sure that your local repo is synced to this commit and run the [installation procedure](http://neon.nervanasys.com/docs/latest/installation.html) before proceeding.
 
 
 If neon is installed into a `virtualenv`, make sure that it is activated before running the commands below.  Also, the commands below use the GPU backend by default so add `-b cpu` if you are running on a system without a compatible GPU.
