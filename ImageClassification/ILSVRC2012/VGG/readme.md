@@ -95,7 +95,7 @@ The batch size is set to 64 in the examples above because with larger batch size
 
 ### Version compatibility
 
-Neon version: v2.2.0 (https://github.com/NervanaSystems/neon/tree/v2.2.0).
+Neon version: v2.3.0 (https://github.com/NervanaSystems/neon/tree/v2.3.0).
 
 ## Citation
 
