@@ -52,10 +52,10 @@ These scripts have been tested with [neon 1.4.0] and results verified with the
 [SHA bc196cb].
 
 
-## References
+## Reference
 
-```"Learning and Transferring Mid-Level Image Representations using 
-Convolutional Neural Networks", M. Oquab et. al., CVPR 2014.```
+- "Learning and Transferring Mid-Level Image Representations using Convolutional 
+  Neural Networks", M. Oquab et. al., CVPR 2014.
 
 
 [paper]:http://www.di.ens.fr/willow/pdfscurrent/oquab14cvpr.pdf
