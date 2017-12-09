@@ -7,8 +7,8 @@ The model run script is included here [vgg_neon.py](./vgg_neon.py).  This script
 
 ### Trained weights
 The trained weights file can be downloaded from AWS using the following links:
-[VGG_D.p]( https://s3-us-west-1.amazonaws.com/nervana-modelzoo/VGG/VGG_D.p) and [VGG_E.p][S3_WEIGHTS_FILE].
-[S3_WEIGHTS_FILE]: https://s3-us-west-1.amazonaws.com/nervana-modelzoo/VGG/VGG_E.p
+[VGG_D.p]( https://s3-us-west-1.amazonaws.com/nervana-modelzoo/VGG/VGG_D_fused_conv_bias.p) and [VGG_E.p][S3_WEIGHTS_FILE].
+[S3_WEIGHTS_FILE]: https://s3-us-west-1.amazonaws.com/nervana-modelzoo/VGG/VGG_E_fused_conv_bias.p
 
 ## Performance
 
