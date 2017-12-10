@@ -14,7 +14,7 @@ The model run script is included here [googlenet_neon.py](./googlenet_neon.py).
 The trained weights file can be downloaded from AWS using the following link:
 [trained googlenet model weights][S3_WEIGHTS_FILE].
 
-[S3_WEIGHTS_FILE]: https://s3-us-west-1.amazonaws.com/nervana-modelzoo/googlenet/googlenet.p
+[S3_WEIGHTS_FILE]: https://s3-us-west-1.amazonaws.com/nervana-modelzoo/googlenet/googlenet_fused_conv_bias.p
 
 ### Performance
 This model is acheiving 64% top-1 and 85.5% top-5 accuracy on the validation data set.
