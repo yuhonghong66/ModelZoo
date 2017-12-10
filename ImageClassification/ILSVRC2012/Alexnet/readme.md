@@ -16,7 +16,7 @@ The model run script is included below [alexnet_neon.py](./alexnet_neon.py).
 ### Trained weights
 The trained weights file can be downloaded from AWS using the following link:
 [trained Alexnet model weights][S3_WEIGHTS_FILE]
-[S3_WEIGHTS_FILE]: https://s3-us-west-1.amazonaws.com/nervana-modelzoo/alexnet/alexnet.p
+[S3_WEIGHTS_FILE]: https://s3-us-west-1.amazonaws.com/nervana-modelzoo/alexnet/alexnet_fused_conv_bias.p
 
 ### Performance
 This model is acheiving 58.6% top-1 and 81.1% top-5 accuracy on the validation

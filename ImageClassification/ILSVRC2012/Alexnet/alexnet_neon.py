@@ -138,7 +138,7 @@ valmetric = TopKMisclassification(k=5)
 callbacks = Callbacks(model, eval_set=val, metric=valmetric, **args.callback_args)
 
 if args.model_file is not None:
-    model.load_params(args.model_file)
+    model.load_params(args.model_file, load_states=False)
 if not args.test_only:
     cost = GeneralizedCost(costfunc=CrossEntropyMulti())
     model.fit(train, optimizer=opt, num_epochs=args.epochs, cost=cost, callbacks=callbacks)
